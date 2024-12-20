@@ -100,8 +100,5 @@ public static class DataFrameExtensions
         return DataFrame.LoadFrom(resultList, stringTypeList);
     }
 
-    private static bool IsStruct(Type type)
-    {
-        return type is { IsValueType: true, IsPrimitive: false, IsEnum: false };
-    }
+    private static bool IsStruct(Type type) => type is { IsValueType: true, IsPrimitive: false, IsEnum: false };
 }
