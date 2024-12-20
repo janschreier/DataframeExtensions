@@ -27,3 +27,21 @@ var valueCounts = df.ValueCounts();
 var data = new List<int> { 1, 2, 3, 4, 5 };
 var df = data.EnumerableToDataframe();
 ```
+
+
+## Installation
+From the solution folder call `dotnet pack`
+```powershell
+dotnet pack -c RELEASE
+```
+
+Asuming that you want to use it in a Polyglot Notebook, you have to reference the `DataFrameExtensions.dll` like so
+```csharp
+#r "DataFrameExtensions\bin\Release\net6.0\publish\DataFrameExtensions.dll"
+using Microsoft.Data.Analysis;
+using DataFrameExtensions;
+
+var df = DataFrame.LoadCsv(@"CSVs\Sales_SalesOrderHeader.csv");
+
+df.ShowColumns()
+```
