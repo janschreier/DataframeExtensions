@@ -80,7 +80,7 @@ public static class DataFrameExtensions
         foreach (var prop in properties)
         {
             if ((prop.PropertyType.IsClass && prop.PropertyType != typeof(string)) || prop.PropertyType.IsInterface
-                || prop.PropertyType.IsArray || IsStruct(prop.PropertyType) || prop.PropertyType.IsEnum )
+                || prop.PropertyType.IsArray || IsStruct(prop.PropertyType) || prop.PropertyType.IsEnum)
             {
                 throw new ArgumentException(
                     $"Only value types are supported. Property {prop.Name} is of type {prop.PropertyType.Name}");
@@ -101,4 +101,30 @@ public static class DataFrameExtensions
     }
 
     private static bool IsStruct(Type type) => type is { IsValueType: true, IsPrimitive: false, IsEnum: false };
+
+    /// <summary>
+    /// Creates a filter column in the DataFrame based on the provided filter function.
+    /// </summary>
+    /// <param name="dataFrame">The input DataFrame.</param>
+    /// <param name="columnName">The name of the filter column.</param>
+    /// <param name="filter">The filter function to apply to each row.</param>
+    /// <returns>A PrimitiveDataFrameColumn of bool indicating the filter results.</returns>
+    public static PrimitiveDataFrameColumn<bool> CreateFilterColumn(this DataFrame dataFrame, string? columnName,
+        Func<DataFrameRow, bool> filter)
+    {
+        var filteredRows = dataFrame.Rows.Select(filter);
+        return new PrimitiveDataFrameColumn<bool>(columnName, filteredRows);
+    }
+
+    /// <summary>
+    /// Filters the DataFrame based on the provided filter function.
+    /// </summary>
+    /// <param name="dataFrame">The input DataFrame.</param>
+    /// <param name="filter">The filter function to apply to each row.</param>
+    /// <returns>A new DataFrame containing only the rows that match the filter criteria.</returns>
+    public static DataFrame Filter(this DataFrame dataFrame, Func<DataFrameRow, bool> filter)
+    {
+        var filteredRows = CreateFilterColumn(dataFrame, "Filter", filter);
+        return dataFrame.Filter(filteredRows);
+    }
 }

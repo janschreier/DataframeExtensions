@@ -1,4 +1,5 @@
 ﻿using DataFrameExtensions;
+using Microsoft.Data.Analysis;
 
 namespace Tests;
 
@@ -7,24 +8,24 @@ public class DataFrameExtensionsTests
     record Person(string Name, int Age, string? City);
 
 
+    private readonly List<Person> _personList =
+    [
+        new("John", 25, "New York"),
+        new("Jane", 30, "Los Angeles"),
+        new("Doe", 35, "Chicago"),
+        new("Smith", 40, "Houston"),
+        new("Alex", 45, "Phoenix"),
+        new("Alice", 50, "Philadelphia"),
+        new("Bob", 55, "San Antonio"),
+        new("Charlie", 60, "San Diego"),
+        new("David", 65, "Dallas"),
+        new("Eve", 70, null)
+    ];
+
     [Test]
     public void EnumerableToDataframe_Is_Created()
     {
-        var personList = new List<Person>
-        {
-            new("John", 25, "New York"),
-            new("Jane", 30, "Los Angeles"),
-            new("Doe", 35, "Chicago"),
-            new("Smith", 40, "Houston"),
-            new("Alex", 45, "Phoenix"),
-            new("Alice", 50, "Philadelphia"),
-            new("Bob", 55, "San Antonio"),
-            new("Charlie", 60, "San Diego"),
-            new("David", 65, "Dallas"),
-            new("Eve", 70, null)
-        };
-
-        var df = personList.EnumerableToDataframe();
+        var df = _personList.EnumerableToDataframe();
         Assert.That(df.Rows.Count(), Is.EqualTo(10));
         Assert.That(df.Rows[0]["Name"], Is.EqualTo("John"));
         Assert.That(df.Rows[0]["Age"], Is.EqualTo(25));
@@ -41,7 +42,7 @@ public class DataFrameExtensionsTests
     {
         var personList = new List<PersonWithAddress>
         {
-            new("John",  new Address("123 Main St")),
+            new("John", new Address("123 Main St")),
         };
 
         Assert.Throws<ArgumentException>(() => personList.EnumerableToDataframe());
@@ -81,5 +82,14 @@ public class DataFrameExtensionsTests
         };
 
         Assert.Throws<ArgumentException>(() => personList.EnumerableToDataframe());
+    }
+
+
+    [Test]
+    public void T()
+    {
+        var df = _personList.EnumerableToDataframe();
+        var filter = df.Filter(row => (float)row["TotalDue"] > 3000 && (float?) row["SalesPersonID"] == 279);
+        
     }
 }
