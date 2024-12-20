@@ -66,7 +66,7 @@ public class DataFrameExtensionsTests
         Assert.Throws<ArgumentException>(() => personList.EnumerableToDataframe());
     }
 
-    enum DummyEnum
+    private enum DummyEnum
     {
         One,
     }
@@ -83,13 +83,38 @@ public class DataFrameExtensionsTests
 
         Assert.Throws<ArgumentException>(() => personList.EnumerableToDataframe());
     }
-
-
+    
     [Test]
-    public void T()
+    public void CreateFilterColumn_For_Name_And_Age()
     {
         var df = _personList.EnumerableToDataframe();
-        var filter = df.Filter(row => (float)row["TotalDue"] > 3000 && (float?) row["SalesPersonID"] == 279);
+        
+        var filter = df.CreateFilterColumn("FilterCol", row => ((string)row["Name"] ).StartsWith('J') && (int) row["Age"] <= 30);
+        var filtedDataFrame = df.Filter(filter);
+        
+        Assert.That(filtedDataFrame.Rows.Count(), Is.EqualTo(2));
+    }
+
+    
+    [Test]
+    public void Filter_For_Name_And_Age()
+    {
+        var df = _personList.EnumerableToDataframe();
+        var filter = df.Filter(row => ((string)row["Name"] ).StartsWith('J') && (int) row["Age"] <= 30);
+        Assert.That(filter.Rows.Count(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void AddColumn_Age()
+    {
+        var df = _personList.EnumerableToDataframe();
+        var columnCount = df.Columns.Count;
+        df.AddColumn("BirthYear", row => DateTime.Now.Year - (int)row["Age"]);
+        
+        Assert.That(df.Columns.Count, Is.EqualTo(columnCount+1));
+        Assert.That(df.Columns["BirthYear"][0], Is.EqualTo(DateTime.Now.Year - _personList.First().Age));
+        
+        
         
     }
 }

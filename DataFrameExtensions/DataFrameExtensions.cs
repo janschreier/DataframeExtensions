@@ -66,13 +66,13 @@ public static class DataFrameExtensions
     }
 
     /// <summary>
-    /// Converts an enumerable collection of objects to a DataFrame. Works only for value types (except structs) and strings
+    /// Converts an enumerable collection of class-objects to a DataFrame. Works only for value types (except structs) and strings
     /// Otherwise, an ArgumentException is thrown.
     /// </summary>
     /// <typeparam name="T">The type of objects in the enumerable collection.</typeparam>
     /// <param name="data">The enumerable collection of objects.</param>
     /// <returns>A DataFrame representing the enumerable collection.</returns>
-    public static DataFrame EnumerableToDataframe<T>(this IEnumerable<T> data)
+    public static DataFrame EnumerableToDataframe<T>(this IEnumerable<T> data) where T : class
     {
         var properties = typeof(T).GetProperties();
 
@@ -93,6 +93,7 @@ public static class DataFrameExtensions
 
         foreach (var item in data)
         {
+            //List<object> contains the values of a row
             List<object> row = properties.Select(prop => prop.GetValue(item)).ToList();
             resultList = resultList.Append(row);
         }
@@ -126,5 +127,21 @@ public static class DataFrameExtensions
     {
         var filteredRows = CreateFilterColumn(dataFrame, "Filter", filter);
         return dataFrame.Filter(filteredRows);
+    }
+
+    /// <summary>
+    /// Adds a new column to the DataFrame based on the provided function.
+    /// </summary>
+    /// <typeparam name="T">The type of the new column values.</typeparam>
+    /// <param name="dataFrame">The input DataFrame.</param>
+    /// <param name="columnName">The name of the new column.</param>
+    /// <param name="func">The function to generate the new column values from each row.</param>
+    /// <returns>The DataFrame with the new column added.</returns>
+    public static void AddColumn<T>(this DataFrame dataFrame, string columnName, Func<DataFrameRow, T> func)
+        where T : unmanaged
+    {
+        var newColumn = dataFrame.Rows.Select(f => new List<object> { func(f)}).ToList();
+        var tempDf = DataFrame.LoadFrom(newColumn, [(columnName, typeof(T))]);
+        dataFrame.Columns.Add(tempDf.Columns[0]);
     }
 }
