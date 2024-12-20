@@ -5,6 +5,7 @@ This repository contains a set of extensions for [ML.net](https://dotnet.microso
 
 `EnumerableToDataframe()` converts an `IEnumerable<T>` to a DataFrame.
 ```csharp
+record Person(string Name, int Age, string City);
 List<Person> _personList =
     [
         new("John", 25, "New York"),
