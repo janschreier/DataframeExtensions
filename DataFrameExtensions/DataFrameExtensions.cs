@@ -138,7 +138,6 @@ public static class DataFrameExtensions
     /// <param name="func">The function to generate the new column values from each row.</param>
     /// <returns>The DataFrame with the new column added.</returns>
     public static void AddColumn<T>(this DataFrame dataFrame, string columnName, Func<DataFrameRow, T> func)
-        where T : unmanaged
     {
         var newColumn = dataFrame.Rows.Select(f => new List<object> { func(f)}).ToList();
         var tempDf = DataFrame.LoadFrom(newColumn, [(columnName, typeof(T))]);
