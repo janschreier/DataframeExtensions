@@ -46,7 +46,8 @@ var valueCounts = df.ValueCounts();
 ```csharp
 var df = _personList.EnumerableToDataframe();
 
-var filter = df.CreateFilterColumn("FilterCol", row => ((string)row["Name"] ).StartsWith('J') && (int) row["Age"] <= 30);
+var filter = df.CreateFilterColumn("FilterCol", 
+    row => ((string)row["Name"] ).StartsWith('J') && (int) row["Age"] <= 30);
 var filtedDataFrame = df.Filter(filter);
 
 Assert.That(filtedDataFrame.Rows.Count(), Is.EqualTo(2));
@@ -55,7 +56,8 @@ Assert.That(filtedDataFrame.Rows.Count(), Is.EqualTo(2));
 `Filter()` filters the DataFrame based on a condition.
 ```csharp
 var df = _personList.EnumerableToDataframe();
-var filter = df.Filter(row => ((string)row["Name"] ).StartsWith('J') && (int) row["Age"] <= 30);
+var filter = df.Filter(
+    row => ((string)row["Name"] ).StartsWith('J') && (int) row["Age"] <= 30);
 Assert.That(filter.Rows.Count(), Is.EqualTo(2));
 ```
 
