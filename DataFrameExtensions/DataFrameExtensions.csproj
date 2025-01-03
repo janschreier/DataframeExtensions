@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageId>de.janschreier.DataframeExtensions</PackageId>
   </PropertyGroup>
 
   <PropertyGroup>
