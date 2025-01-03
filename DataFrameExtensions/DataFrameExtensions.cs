@@ -2,6 +2,9 @@
 
 namespace DataFrameExtensions;
 
+/// <summary>
+/// This class contains extension methods for the ML.net DataFrame class.
+/// </summary>
 public static class DataFrameExtensions
 {
     /// <summary>
